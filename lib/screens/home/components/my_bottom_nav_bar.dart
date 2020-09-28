@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_app/constants.dart';
-import 'package:recipe_app/models/NavItem.dart';
+import 'package:recipe_app/screens/home/models/NavItem.dart';
 import 'package:recipe_app/size_config.dart';
 
 class MyBottomNavBar extends StatelessWidget {

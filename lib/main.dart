@@ -1,30 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:recipe_app/constants.dart';
-import 'package:recipe_app/models/NavItem.dart';
-import 'package:recipe_app/screens/home/home_screen.dart';
+import 'package:recipe_app/screens/Login/splash_page.dart';
+import 'package:recipe_app/screens/Login/stores/login_store.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:recipe_app/screens/home/models/NavItem.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => NavItems(),
+    return MultiProvider(
+      providers: [
+        Provider<LoginStore>(
+          create: (_) => LoginStore(),
+        ),
+        ChangeNotifierProvider<NavItems>(
+          create: (context) => NavItems(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Recipe App',
+        title: 'Addis Bid',
         theme: ThemeData(
-          // backgroundColor: Colors.white,
           scaffoldBackgroundColor: Colors.white,
-          // We apply this to our appBarTheme because most of our appBar have this style
-          appBarTheme: AppBarTheme(color: Colors.white, elevation: 0),
+          appBarTheme: AppBarTheme(
+            color: Colors.white,
+          ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: HomeScreen(),
+        home: SplashPage(),
       ),
     );
   }

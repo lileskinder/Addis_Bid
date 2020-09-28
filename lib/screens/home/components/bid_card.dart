@@ -1,72 +1,90 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:recipe_app/models/BidBundel.dart';
+import 'package:recipe_app/constants.dart';
+import 'package:recipe_app/screens/home/components/progress_Indicator.dart';
+import 'package:recipe_app/screens/home/models/BidBundel.dart';
 
 import '../../../size_config.dart';
 
-class RecipeBundelCard extends StatelessWidget {
-  final RecipeBundle recipeBundle;
+class BidBundelCard extends StatefulWidget {
+  final BidBundle bidBundle;
   final Function press;
 
-  const RecipeBundelCard({Key key, this.recipeBundle, this.press}) : super(key: key);
+  const BidBundelCard({Key key, this.bidBundle, this.press}) : super(key: key);
+
+  @override
+  _BidBundelCardState createState() => _BidBundelCardState();
+}
+
+class _BidBundelCardState extends State<BidBundelCard> {
   @override
   Widget build(BuildContext context) {
     double defaultSize = SizeConfig.defaultSize;
     // Now we dont this Aspect ratio
     return GestureDetector(
-      onTap: press,
-      child: Container(
-        decoration: BoxDecoration(
-          color: recipeBundle.color,
-          borderRadius: BorderRadius.circular(defaultSize * 1.8), //18
-        ),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(defaultSize * 2), //20
+      onTap: widget.press,
+      child: Card(
+        color: Colors.white,
+        elevation: 1,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Image.network(
+                  widget.bidBundle.imageSrc,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: defaultSize * 0.5),
+              Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Spacer(),
-                    Text(
-                      recipeBundle.title,
-                      style: TextStyle(
-                          fontSize: defaultSize * 2.2, //22
-                          color: Colors.white),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    SizedBox(
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          topRight: Radius.circular(8),
+                        ),
+                        child: RaisedButton(
+                          onPressed: () {},
+                          color: kPrimaryColor,
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Bid ${widget.bidBundle.startingPrice}Br',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: kTextColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    SizedBox(height: defaultSize * 0.5), // 5
-                    Text(
-                      recipeBundle.description,
-                      style: TextStyle(color: Colors.white54),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    SizedBox(
+                      height: 8.0,
+                      child: TimerProgressIndicator(),
                     ),
-                    Spacer(),
-                    
-                    SizedBox(height: defaultSize * 0.5), //5
-                    buildInfoRow(
-                      defaultSize,
-                      iconSrc: "assets/icons/chef.svg",
-                      text: "${recipeBundle.items} items",
-                    ),
-                    Spacer(),
                   ],
                 ),
               ),
-            ),
-            SizedBox(width: defaultSize * 0.5), //5
-            AspectRatio(
-              aspectRatio: 0.71,
-              child: Image.asset(
-                recipeBundle.imageSrc,
-                fit: BoxFit.cover,
-                alignment: Alignment.centerLeft,
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import '../../../size_config.dart';
 // Our Category List need StateFullWidget
 // I can use Provider on it, Then we dont need StatefulWidget
 
+
 class Categories extends StatefulWidget {
   @override
   _CategoriesState createState() => _CategoriesState();
